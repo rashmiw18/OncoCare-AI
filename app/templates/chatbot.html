@@ -1,0 +1,1520 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+OncoCare AI Chatbot
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+
+/* =========================================
+   CHATBOT PAGE
+========================================= */
+
+.chatbot-page {
+
+    min-height: calc(100vh - 80px);
+
+    padding: 30px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+/* =========================================
+   CHATBOT CONTAINER
+========================================= */
+
+.chatbot-container {
+
+    width: 100%;
+
+    max-width: 1100px;
+
+    height: 78vh;
+
+    min-height: 550px;
+
+    background: #0d0d0d;
+
+    border: 1px solid #292929;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-shadow:
+
+        0 20px 60px
+
+        rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.chatbot-header {
+
+    padding: 20px 26px;
+
+    border-bottom: 1px solid #292929;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    background: #111111;
+
+}
+
+
+/* =========================================
+   HEADER LEFT SIDE
+========================================= */
+
+.chatbot-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+}
+
+
+/* =========================================
+   BACK TO DASHBOARD BUTTON
+========================================= */
+
+.back-dashboard {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 13px;
+
+    border: 1px solid #292929;
+
+    border-radius: 9px;
+
+    color: #999999;
+
+    background: #151515;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    transition: all 0.3s ease;
+
+}
+
+
+.back-dashboard span:first-child {
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    transition: transform 0.3s ease;
+
+}
+
+
+.back-dashboard:hover {
+
+    color: white;
+
+    background: #222222;
+
+    border-color: #555555;
+
+    transform: translateX(-3px);
+
+}
+
+
+.back-dashboard:hover span:first-child {
+
+    transform: translateX(-4px);
+
+}
+
+
+/* =========================================
+   BOT ICON
+========================================= */
+
+.bot-icon {
+
+    width: 44px;
+
+    height: 44px;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: black;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================
+   CHATBOT TITLE
+========================================= */
+
+.chatbot-title h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+.chatbot-title p {
+
+    margin: 4px 0 0;
+
+    color: #777777;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================================
+   ONLINE STATUS
+========================================= */
+
+.online-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #888888;
+
+    font-size: 13px;
+
+}
+
+
+.online-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #70d890;
+
+    box-shadow:
+
+        0 0 10px
+
+        rgba(112, 216, 144, 0.7);
+
+}
+
+
+/* =========================================
+   MESSAGES
+========================================= */
+
+.chat-messages {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 28px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message {
+
+    display: flex;
+
+    max-width: 78%;
+
+    animation: messageAppear 0.3s ease;
+
+}
+
+
+.message.bot {
+
+    align-self: flex-start;
+
+}
+
+
+.message.user {
+
+    align-self: flex-end;
+
+}
+
+
+.message-content {
+
+    padding: 14px 18px;
+
+    border-radius: 16px;
+
+    line-height: 1.6;
+
+    font-size: 15px;
+
+}
+
+
+/* =========================================
+   BOT MESSAGE
+========================================= */
+
+.message.bot .message-content {
+
+    background: #181818;
+
+    border: 1px solid #292929;
+
+    color: #d0d0d0;
+
+    border-bottom-left-radius: 4px;
+
+}
+
+
+/* =========================================
+   USER MESSAGE
+========================================= */
+
+.message.user .message-content {
+
+    background: white;
+
+    color: black;
+
+    border-bottom-right-radius: 4px;
+
+    white-space: pre-wrap;
+
+}
+
+
+/* =========================================
+   ORGANIZED AI RESPONSE
+========================================= */
+
+.message.bot .message-content p {
+
+    margin: 0 0 14px;
+
+}
+
+
+.message.bot .message-content p:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+/* AI HEADINGS */
+
+.message.bot .message-content h3 {
+
+    margin: 18px 0 8px;
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+.message.bot .message-content h4 {
+
+    margin: 14px 0 7px;
+
+    color: #eeeeee;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+}
+
+
+/* BOLD TEXT */
+
+.message.bot .message-content strong {
+
+    color: #ffffff;
+
+    font-weight: 700;
+
+}
+
+
+/* BULLET LIST */
+
+.message.bot .message-content ul {
+
+    margin: 8px 0 16px;
+
+    padding-left: 22px;
+
+}
+
+
+.message.bot .message-content li {
+
+    margin-bottom: 8px;
+
+    padding-left: 4px;
+
+}
+
+
+/* NUMBERED LIST */
+
+.message.bot .message-content ol {
+
+    margin: 8px 0 16px;
+
+    padding-left: 22px;
+
+}
+
+
+.message.bot .message-content ol li {
+
+    margin-bottom: 8px;
+
+}
+
+
+/* =========================================
+   TYPING INDICATOR
+========================================= */
+
+.typing {
+
+    display: none;
+
+    align-self: flex-start;
+
+    padding: 14px 18px;
+
+    background: #181818;
+
+    border: 1px solid #292929;
+
+    border-radius: 16px;
+
+    color: #888888;
+
+    font-size: 14px;
+
+}
+
+
+.typing.active {
+
+    display: block;
+
+}
+
+
+/* =========================================
+   SUGGESTIONS
+========================================= */
+
+.suggestions {
+
+    padding: 0 28px 15px;
+
+    display: flex;
+
+    gap: 10px;
+
+    overflow-x: auto;
+
+}
+
+
+.suggestion {
+
+    white-space: nowrap;
+
+    padding: 9px 14px;
+
+    background: #151515;
+
+    border: 1px solid #292929;
+
+    color: #aaaaaa;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: 0.2s;
+
+}
+
+
+.suggestion:hover {
+
+    background: #222222;
+
+    color: white;
+
+}
+
+
+/* =========================================
+   INPUT AREA
+========================================= */
+
+.chat-input-area {
+
+    padding: 18px 24px;
+
+    border-top: 1px solid #292929;
+
+    background: #111111;
+
+}
+
+
+.chat-form {
+
+    display: flex;
+
+    gap: 12px;
+
+}
+
+
+.chat-input {
+
+    flex: 1;
+
+    padding: 15px 18px;
+
+    background: #181818;
+
+    border: 1px solid #333333;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 15px;
+
+    outline: none;
+
+}
+
+
+.chat-input:focus {
+
+    border-color: #666666;
+
+}
+
+
+.send-button {
+
+    width: 52px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: black;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+.send-button:hover {
+
+    transform: translateY(-2px);
+
+}
+
+
+.send-button:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+
+/* =========================================
+   DISCLAIMER
+========================================= */
+
+.disclaimer {
+
+    margin: 10px 0 0;
+
+    text-align: center;
+
+    color: #555555;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================
+   ANIMATION
+========================================= */
+
+@keyframes messageAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 800px) {
+
+    .chatbot-header {
+
+        padding: 16px;
+
+    }
+
+
+    .chatbot-title {
+
+        gap: 9px;
+
+    }
+
+
+    .back-dashboard {
+
+        padding: 8px;
+
+    }
+
+
+    .back-dashboard span:last-child {
+
+        display: none;
+
+    }
+
+
+    .bot-icon {
+
+        width: 40px;
+
+        height: 40px;
+
+    }
+
+
+    .chatbot-title h2 {
+
+        font-size: 17px;
+
+    }
+
+
+    .chatbot-title p {
+
+        font-size: 11px;
+
+    }
+
+
+    .online-status {
+
+        display: none;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .chatbot-page {
+
+        padding: 15px;
+
+    }
+
+
+    .chatbot-container {
+
+        height: 85vh;
+
+    }
+
+
+    .chat-messages {
+
+        padding: 18px;
+
+    }
+
+
+    .suggestions {
+
+        padding-left: 18px;
+
+        padding-right: 18px;
+
+    }
+
+
+    .message {
+
+        max-width: 90%;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="chatbot-page">
+
+
+    <div class="chatbot-container">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+
+        <header class="chatbot-header">
+
+
+            <div class="chatbot-title">
+
+
+                <!-- BACK TO DASHBOARD -->
+
+
+                <a href="{{ url_for('dashboard.dashboard') }}"
+
+                   class="back-dashboard"
+
+                   title="Back to Dashboard">
+
+
+                    <span>←</span>
+
+                    <span>Dashboard</span>
+
+
+                </a>
+
+
+                <!-- BOT ICON -->
+
+
+                <div class="bot-icon">
+
+                    ✦
+
+                </div>
+
+
+                <!-- TITLE -->
+
+
+                <div>
+
+
+                    <h2>
+
+                        OncoCare AI
+
+                    </h2>
+
+
+                    <p>
+
+                        Personal Health Assistant
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ONLINE STATUS -->
+
+
+            <div class="online-status">
+
+
+                <span class="online-dot"></span>
+
+                Online
+
+            </div>
+
+
+        </header>
+
+
+        <!-- =====================================
+             MESSAGES
+        ====================================== -->
+
+
+        <div id="chatMessages"
+
+             class="chat-messages">
+
+
+            <!-- INITIAL BOT MESSAGE -->
+
+
+            <div class="message bot">
+
+
+                <div class="message-content">
+
+
+                    <p>
+
+                        Hello {{ current_user.name }} 👋
+
+                    </p>
+
+
+                    <p>
+
+                        I am your OncoCare AI health assistant.
+
+                        I can help you understand your recorded
+
+                        health data and AI-generated insights.
+
+                    </p>
+
+
+                    <p>
+
+                        How can I help you today?
+
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- TYPING INDICATOR -->
+
+
+            <div id="typingIndicator"
+
+                 class="typing">
+
+
+                OncoCare AI is thinking...
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             SUGGESTIONS
+        ====================================== -->
+
+
+        <div class="suggestions">
+
+
+            <button class="suggestion"
+
+                    onclick="useSuggestion(this)">
+
+
+                What is my latest health status?
+
+
+            </button>
+
+
+            <button class="suggestion"
+
+                    onclick="useSuggestion(this)">
+
+
+                Explain my recent health trends
+
+
+            </button>
+
+
+            <button class="suggestion"
+
+                    onclick="useSuggestion(this)">
+
+
+                Explain my AI health insight
+
+
+            </button>
+
+
+        </div>
+
+
+        <!-- =====================================
+             INPUT
+        ====================================== -->
+
+
+        <div class="chat-input-area">
+
+
+            <form id="chatForm"
+
+                  class="chat-form">
+
+
+                <input
+
+                    type="text"
+
+                    id="chatInput"
+
+                    class="chat-input"
+
+                    placeholder="Ask about your health data..."
+
+                    autocomplete="off"
+
+                    required>
+
+
+                <button
+
+                    type="submit"
+
+                    id="sendButton"
+
+                    class="send-button">
+
+
+                    ↑
+
+
+                </button>
+
+
+            </form>
+
+
+            <p class="disclaimer">
+
+
+                AI-generated information is for educational
+
+                purposes and does not replace professional
+
+                medical advice.
+
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+
+<script>
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+
+const chatForm =
+
+    document.getElementById(
+
+        "chatForm"
+
+    );
+
+
+const chatInput =
+
+    document.getElementById(
+
+        "chatInput"
+
+    );
+
+
+const chatMessages =
+
+    document.getElementById(
+
+        "chatMessages"
+
+    );
+
+
+const typingIndicator =
+
+    document.getElementById(
+
+        "typingIndicator"
+
+    );
+
+
+const sendButton =
+
+    document.getElementById(
+
+        "sendButton"
+
+    );
+
+
+/* =========================================
+   FORMAT AI RESPONSE
+========================================= */
+
+
+function formatAIResponse(text) {
+
+
+    let formatted = text;
+
+
+    /*
+
+       Escape HTML first
+
+       This prevents AI text from
+
+       injecting unwanted HTML.
+
+    */
+
+
+    formatted = formatted
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;");
+
+
+    /* =====================================
+       BOLD TEXT
+       **text**
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /\*\*(.*?)\*\*/g,
+
+        "<strong>$1</strong>"
+
+    );
+
+
+    /* =====================================
+       HEADINGS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /^###\s+(.*)$/gm,
+
+        "<h4>$1</h4>"
+
+    );
+
+
+    formatted = formatted.replace(
+
+        /^##\s+(.*)$/gm,
+
+        "<h3>$1</h3>"
+
+    );
+
+
+    /* =====================================
+       BULLET POINTS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /^\s*[-•]\s+(.*)$/gm,
+
+        "<li>$1</li>"
+
+    );
+
+
+    /* =====================================
+       NUMBERED POINTS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /^\s*\d+\.\s+(.*)$/gm,
+
+        "<li>$1</li>"
+
+    );
+
+
+    /* =====================================
+       WRAP LIST ITEMS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /((?:<li>.*?<\/li>\s*)+)/gs,
+
+        "<ul>$1</ul>"
+
+    );
+
+
+    /* =====================================
+       PARAGRAPHS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /\n{2,}/g,
+
+        "</p><p>"
+
+    );
+
+
+    /* =====================================
+       SINGLE LINE BREAKS
+    ====================================== */
+
+
+    formatted = formatted.replace(
+
+        /\n/g,
+
+        "<br>"
+
+    );
+
+
+    return "<p>" + formatted + "</p>";
+
+}
+
+
+/* =========================================
+   ADD MESSAGE
+========================================= */
+
+
+function addMessage(
+
+    message,
+
+    type
+
+) {
+
+
+    const messageDiv =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+    messageDiv.className =
+
+        `message ${type}`;
+
+
+    const contentDiv =
+
+        document.createElement(
+
+            "div"
+
+        );
+
+
+    contentDiv.className =
+
+        "message-content";
+
+
+    /* =====================================
+       FORMAT ONLY BOT RESPONSES
+    ====================================== */
+
+
+    if (type === "bot") {
+
+
+        contentDiv.innerHTML =
+
+            formatAIResponse(
+
+                message
+
+            );
+
+
+    } else {
+
+
+        contentDiv.textContent =
+
+            message;
+
+
+    }
+
+
+    messageDiv.appendChild(
+
+        contentDiv
+
+    );
+
+
+    chatMessages.insertBefore(
+
+        messageDiv,
+
+        typingIndicator
+
+    );
+
+
+    chatMessages.scrollTop =
+
+        chatMessages.scrollHeight;
+
+}
+
+
+/* =========================================
+   SUGGESTION BUTTON
+========================================= */
+
+
+function useSuggestion(
+
+    button
+
+) {
+
+
+    chatInput.value =
+
+        button.textContent.trim();
+
+
+    chatInput.focus();
+
+}
+
+
+/* =========================================
+   SEND MESSAGE
+========================================= */
+
+
+chatForm.addEventListener(
+
+    "submit",
+
+    async function (event) {
+
+
+        event.preventDefault();
+
+
+        const message =
+
+            chatInput.value.trim();
+
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        /* ADD USER MESSAGE */
+
+
+        addMessage(
+
+            message,
+
+            "user"
+
+        );
+
+
+        chatInput.value = "";
+
+
+        sendButton.disabled =
+
+            true;
+
+
+        typingIndicator.classList.add(
+
+            "active"
+
+        );
+
+
+        chatMessages.scrollTop =
+
+            chatMessages.scrollHeight;
+
+
+        try {
+
+
+            const response =
+
+                await fetch(
+
+                    "{{ url_for('chatbot.send_message') }}",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            message: message
+
+                        })
+
+                    }
+
+                );
+
+
+            const data =
+
+                await response.json();
+
+
+            if (data.success) {
+
+
+                addMessage(
+
+                    data.response,
+
+                    "bot"
+
+                );
+
+
+            } else {
+
+
+                addMessage(
+
+                    data.message ||
+
+                    "Something went wrong.",
+
+                    "bot"
+
+                );
+
+            }
+
+
+        } catch (error) {
+
+
+            addMessage(
+
+                "Unable to connect to the AI assistant. Please try again.",
+
+                "bot"
+
+            );
+
+
+        } finally {
+
+
+            typingIndicator.classList.remove(
+
+                "active"
+
+            );
+
+
+            sendButton.disabled =
+
+                false;
+
+
+            chatInput.focus();
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

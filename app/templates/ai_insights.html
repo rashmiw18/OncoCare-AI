@@ -1,0 +1,618 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Insights | OncoCare AI
+{% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet"
+      href="{{ url_for(
+          'static',
+          filename='css/dashboard.css'
+      ) }}">
+
+<style>
+
+    .insights-page {
+        padding: 32px;
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .insights-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+    }
+
+    .insights-header h1 {
+        margin: 6px 0;
+        font-size: 32px;
+    }
+
+    .insights-header p {
+        color: #888;
+        margin: 0;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .analyze-button {
+        background: white;
+        color: black;
+        padding: 14px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    .analyze-button:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .insight-card {
+        background: #0d0d0d;
+        border: 1px solid #292929;
+        border-radius: 18px;
+        padding: 30px;
+        margin-bottom: 28px;
+        box-shadow:
+            0 10px 40px
+            rgba(0, 0, 0, 0.35);
+    }
+
+    .insight-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 22px;
+    }
+
+    .section-label {
+        color: #777;
+        font-size: 12px;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+
+    .insight-header h2 {
+        margin: 8px 0 0;
+        font-size: 25px;
+    }
+
+    .risk-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .risk-badge.high {
+        background: rgba(
+            255,
+            70,
+            70,
+            0.15
+        );
+
+        color: #ff7777;
+
+        border: 1px solid #793333;
+    }
+
+    .risk-badge.medium {
+        background: rgba(
+            255,
+            190,
+            70,
+            0.15
+        );
+
+        color: #ffc36b;
+
+        border: 1px solid #795b33;
+    }
+
+    .risk-badge.low {
+        background: rgba(
+            100,
+            220,
+            150,
+            0.15
+        );
+
+        color: #8ee8ad;
+
+        border: 1px solid #39734c;
+    }
+
+    .risk-badge.unknown {
+        background: #222;
+        color: #aaa;
+        border: 1px solid #444;
+    }
+
+    .insight-meta {
+        display: flex;
+        gap: 30px;
+        color: #888;
+        font-size: 14px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid #242424;
+    }
+
+    .insight-meta strong {
+        color: white;
+        font-size: 20px;
+    }
+
+    .ai-section {
+        margin-top: 25px;
+        padding: 20px;
+        background: #111111;
+        border-radius: 12px;
+        border-left: 3px solid #444;
+    }
+
+    .ai-section h3 {
+        margin-top: 0;
+        margin-bottom: 14px;
+        font-size: 17px;
+    }
+
+    .ai-section p {
+        color: #c5c5c5;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .ai-section ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .ai-section li {
+        color: #c5c5c5;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .summary-section {
+        border-left-color: #777;
+    }
+
+    .observations-section {
+        border-left-color: #5b8def;
+    }
+
+    .risk-section {
+        border-left-color: #d87878;
+    }
+
+    .recommendations-section {
+        border-left-color: #79c991;
+    }
+
+    .confidence-box {
+        margin-top: 22px;
+        padding: 14px 18px;
+        background: #151515;
+        border-radius: 10px;
+        color: #aaa;
+    }
+
+    .confidence-box strong {
+        color: white;
+    }
+
+    .empty-insights {
+        text-align: center;
+        padding: 100px 20px;
+        color: #777;
+    }
+
+    @media (max-width: 700px) {
+
+        .insights-page {
+            padding: 20px;
+        }
+
+        .insights-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .header-actions {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .analyze-button {
+            text-align: center;
+        }
+
+        .insight-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .insight-meta {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="insights-page">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="insights-header">
+
+
+        <div>
+
+            <span class="section-label">
+
+                AI MONITORING
+
+            </span>
+
+
+            <h1>
+
+                Health Insights
+
+            </h1>
+
+
+            <p>
+
+                AI-assisted analysis of your recent
+
+                health patterns.
+
+            </p>
+
+        </div>
+
+
+        <!-- HEADER ACTIONS -->
+
+        <div class="header-actions">
+
+
+            <!-- BACK TO DASHBOARD -->
+
+            <a href="{{ url_for(
+
+                'dashboard.dashboard'
+
+            ) }}"
+
+            class="analyze-button">
+
+
+                ← Dashboard
+
+
+            </a>
+
+
+            <!-- ANALYZE HEALTH -->
+
+            <a href="{{ url_for(
+
+                'ai.analyze_health'
+
+            ) }}"
+
+            class="analyze-button">
+
+
+                ✦ Analyze My Health
+
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- INSIGHTS -->
+
+    {% if insights %}
+
+
+        {% for insight in insights %}
+
+
+            <div class="insight-card">
+
+
+                <!-- INSIGHT HEADER -->
+
+                <div class="insight-header">
+
+
+                    <div>
+
+                        <span class="section-label">
+
+                            AI ANALYSIS
+
+                        </span>
+
+
+                        <h2>
+
+                            Health Pattern Analysis
+
+                        </h2>
+
+                    </div>
+
+
+                    <span class="risk-badge
+
+                        {{ insight.risk_level|lower }}">
+
+                        {{ insight.risk_level }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- META -->
+
+                <div class="insight-meta">
+
+
+                    <span>
+
+                        Risk Score:
+
+                        <strong>
+
+                            {{ insight.risk_score }}
+
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        {{ insight.created_at.strftime(
+
+                            "%d %b %Y, %I:%M %p"
+
+                        ) }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- SUMMARY -->
+
+                {% if insight.data.summary %}
+
+
+                <div class="ai-section summary-section">
+
+
+                    <h3>
+
+                        ✦ Summary
+
+                    </h3>
+
+
+                    <p>
+
+                        {{ insight.data.summary }}
+
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- OBSERVATIONS -->
+
+                {% if insight.data.observations %}
+
+
+                <div class="ai-section observations-section">
+
+
+                    <h3>
+
+                        ◉ Key Observations
+
+                    </h3>
+
+
+                    <ul>
+
+
+                        {% for observation
+
+                              in insight.data.observations %}
+
+
+                        <li>
+
+                            {{ observation }}
+
+                        </li>
+
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- RISK FACTORS -->
+
+                {% if insight.data.risk_factors %}
+
+
+                <div class="ai-section risk-section">
+
+
+                    <h3>
+
+                        ⚠ Risk Factors
+
+                    </h3>
+
+
+                    <ul>
+
+
+                        {% for risk
+
+                              in insight.data.risk_factors %}
+
+
+                        <li>
+
+                            {{ risk }}
+
+                        </li>
+
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- RECOMMENDATIONS -->
+
+                {% if insight.data.recommendations %}
+
+
+                <div class="ai-section recommendations-section">
+
+
+                    <h3>
+
+                        ✓ Recommendations
+
+                    </h3>
+
+
+                    <ul>
+
+
+                        {% for recommendation
+
+                              in insight.data.recommendations %}
+
+
+                        <li>
+
+                            {{ recommendation }}
+
+                        </li>
+
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- CONFIDENCE -->
+
+                {% if insight.data.confidence
+
+                      and insight.data.confidence != "Unknown" %}
+
+
+                <div class="confidence-box">
+
+
+                    <strong>
+
+                        AI Confidence:
+
+                    </strong>
+
+
+                    {{ insight.data.confidence }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="empty-insights">
+
+
+            <h2>
+
+                No AI insights yet
+
+            </h2>
+
+
+            <p>
+
+                Add health records and run an
+
+                AI analysis to generate insights.
+
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

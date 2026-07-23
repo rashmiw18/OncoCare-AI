@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Doctor Dashboard | OncoCare AI
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-container">
+
+
+    <div class="page-header">
+
+
+        <div>
+
+            <span class="eyebrow">
+
+                PROFESSIONAL PORTAL
+
+            </span>
+
+
+            <h1>
+
+                Doctor Dashboard
+
+            </h1>
+
+
+            <p>
+
+                Monitor patient health data and AI insights.
+
+            </p>
+
+        </div>
+
+
+        <a href="{{ url_for(
+            'auth.logout'
+        ) }}"
+
+        class="secondary-button">
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+    <div class="empty-state">
+
+
+        <h2>
+
+            Doctor monitoring center
+
+        </h2>
+
+
+        <p>
+
+            Patient management features will be added next.
+
+        </p>
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}

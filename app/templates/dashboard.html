@@ -1,0 +1,1570 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Dashboard | OncoCare AI
+
+{% endblock %}
+
+
+{% block extra_css %}
+
+<link rel="stylesheet"
+
+      href="{{ url_for(
+
+          'static',
+
+          filename='css/dashboard.css'
+
+      ) }}">
+
+
+
+<style>
+
+
+/* =========================================
+   TOPBAR ACTIONS
+========================================= */
+
+
+.topbar-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 24px;
+
+}
+
+
+/* =========================================
+   AI CHATBOT BUTTON
+========================================= */
+
+
+.floating-ai-bot {
+
+    position: relative;
+
+    width: 92px;
+
+    height: 92px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+}
+
+
+/* =========================================
+   ASK AI LABEL
+========================================= */
+
+
+.ai-label {
+
+    position: absolute;
+
+    top: -18px;
+
+    right: -5px;
+
+    padding: 4px 8px;
+
+    border-radius: 8px;
+
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
+
+    font-weight: 700;
+
+    color: #ffffff;
+
+    background: #151515;
+
+    border: 1px solid #333333;
+
+    opacity: 0;
+
+    transform: translateY(5px);
+
+    transition: 0.3s ease;
+
+}
+
+
+.floating-ai-bot:hover .ai-label {
+
+    opacity: 1;
+
+    transform: translateY(0);
+
+}
+
+
+/* =========================================
+   AI PULSE
+========================================= */
+
+
+.ai-pulse {
+
+    position: absolute;
+
+    width: 76px;
+
+    height: 76px;
+
+    border-radius: 50%;
+
+    border: 1px solid
+
+        rgba(255, 255, 255, 0.35);
+
+    animation: aiPulse 2.2s infinite;
+
+}
+
+
+/* SECOND GLOW RING */
+
+
+.ai-pulse::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 8px;
+
+    border-radius: 50%;
+
+    border: 1px solid
+
+        rgba(255, 255, 255, 0.12);
+
+}
+
+
+/* =========================================
+   ROBOT
+========================================= */
+
+
+.ai-robot {
+
+    position: relative;
+
+    width: 68px;
+
+    height: 76px;
+
+    animation: robotFloat 3s ease-in-out infinite;
+
+    transition: 0.3s ease;
+
+}
+
+
+.floating-ai-bot:hover .ai-robot {
+
+    transform: scale(1.15);
+
+}
+
+
+/* =========================================
+   ANTENNA
+========================================= */
+
+
+.robot-antenna {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 32px;
+
+    width: 4px;
+
+    height: 12px;
+
+    background: #ffffff;
+
+    border-radius: 4px;
+
+}
+
+
+.robot-antenna::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: -8px;
+
+    left: -4px;
+
+    width: 12px;
+
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow:
+
+        0 0 8px #ffffff,
+
+        0 0 20px
+
+        rgba(255, 255, 255, 0.6);
+
+    animation: antennaBlink 1.5s infinite;
+
+}
+
+
+/* =========================================
+   ROBOT HEAD
+========================================= */
+
+
+.robot-head {
+
+    position: absolute;
+
+    top: 11px;
+
+    left: 3px;
+
+    width: 62px;
+
+    height: 43px;
+
+    border-radius: 16px;
+
+    background: #f4f4f4;
+
+    border: 2px solid #ffffff;
+
+    box-shadow:
+
+        0 0 18px
+
+        rgba(255, 255, 255, 0.35);
+
+}
+
+
+/* =========================================
+   ROBOT EYES
+========================================= */
+
+
+.robot-eye {
+
+    position: absolute;
+
+    top: 14px;
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #111111;
+
+    animation: eyeBlink 4s infinite;
+
+}
+
+
+.robot-eye:first-child {
+
+    left: 16px;
+
+}
+
+
+.robot-eye:nth-child(2) {
+
+    right: 16px;
+
+}
+
+
+/* =========================================
+   ROBOT MOUTH
+========================================= */
+
+
+.robot-mouth {
+
+    position: absolute;
+
+    bottom: 8px;
+
+    left: 23px;
+
+    width: 16px;
+
+    height: 5px;
+
+    border-radius: 8px;
+
+    background: #111111;
+
+}
+
+
+/* =========================================
+   ROBOT BODY
+========================================= */
+
+
+.robot-body {
+
+    position: absolute;
+
+    top: 54px;
+
+    left: 17px;
+
+    width: 36px;
+
+    height: 23px;
+
+    border-radius: 9px 9px 13px 13px;
+
+    background: #e5e5e5;
+
+    border: 2px solid #ffffff;
+
+    box-shadow:
+
+        0 0 14px
+
+        rgba(255, 255, 255, 0.2);
+
+}
+
+
+/* =========================================
+   ROBOT CORE
+========================================= */
+
+
+.robot-core {
+
+    text-align: center;
+
+    font-size: 15px;
+
+    line-height: 19px;
+
+    color: #111111;
+
+    animation: coreGlow 2s infinite;
+
+}
+
+
+/* =========================================
+   PROFILE CIRCLE
+========================================= */
+
+
+.profile-circle {
+
+    width: 50px;
+
+    height: 50px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #ffffff;
+
+    color: #111111;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+
+@keyframes robotFloat {
+
+
+    0%,
+
+    100% {
+
+        transform: translateY(0);
+
+    }
+
+
+    50% {
+
+        transform: translateY(-8px);
+
+    }
+
+}
+
+
+@keyframes aiPulse {
+
+
+    0% {
+
+        transform: scale(0.8);
+
+        opacity: 0.8;
+
+    }
+
+
+    70% {
+
+        transform: scale(1.3);
+
+        opacity: 0;
+
+    }
+
+
+    100% {
+
+        transform: scale(1.3);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+@keyframes antennaBlink {
+
+
+    0%,
+
+    100% {
+
+        opacity: 1;
+
+    }
+
+
+    50% {
+
+        opacity: 0.35;
+
+    }
+
+}
+
+
+@keyframes eyeBlink {
+
+
+    0%,
+
+    94%,
+
+    100% {
+
+        transform: scaleY(1);
+
+    }
+
+
+    96% {
+
+        transform: scaleY(0.1);
+
+    }
+
+}
+
+
+@keyframes coreGlow {
+
+
+    0%,
+
+    100% {
+
+        opacity: 0.6;
+
+    }
+
+
+    50% {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+
+@media (max-width: 700px) {
+
+
+    .topbar-actions {
+
+        gap: 12px;
+
+    }
+
+
+    .floating-ai-bot {
+
+        width: 72px;
+
+        height: 72px;
+
+    }
+
+
+    .ai-robot {
+
+        transform: scale(0.8);
+
+    }
+
+
+    .profile-circle {
+
+        width: 42px;
+
+        height: 42px;
+
+        font-size: 17px;
+
+    }
+
+}
+
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="dashboard-layout">
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+
+            <div class="logo-symbol">
+
+                ✦
+
+            </div>
+
+
+            <div>
+
+
+                <h2>
+
+                    OncoCare
+
+                </h2>
+
+
+                <span>
+
+                    AI MONITORING
+
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <!-- OVERVIEW -->
+
+
+            <a href="{{ url_for(
+
+                'dashboard.dashboard'
+
+            ) }}"
+
+               class="nav-item active">
+
+
+                <span>
+
+                    ⌂
+
+                </span>
+
+
+                Overview
+
+
+            </a>
+
+
+            <!-- ADD HEALTH DATA -->
+
+
+            <a href="{{ url_for(
+
+                'health.add_health_data'
+
+            ) }}"
+
+               class="nav-item">
+
+
+                <span>
+
+                    ＋
+
+                </span>
+
+
+                Add Health Data
+
+
+            </a>
+
+
+            <!-- AI INSIGHTS -->
+
+
+            <a href="{{ url_for(
+
+                'ai.insights'
+
+            ) }}"
+
+               class="nav-item">
+
+
+                <span>
+
+                    ✦
+
+                </span>
+
+
+                AI Insights
+
+
+            </a>
+
+
+            <!-- REPORTS -->
+
+
+            <a href="{{ url_for(
+
+                'reports.report'
+
+            ) }}"
+
+               class="nav-item">
+
+
+                <span>
+
+                    ▣
+
+                </span>
+
+
+                Reports
+
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+
+            <div class="system-status">
+
+
+                <span class="status-dot"></span>
+
+
+                System Online
+
+
+            </div>
+
+
+            <a href="{{ url_for(
+
+                'auth.logout'
+
+            ) }}"
+
+               class="logout-link">
+
+
+                Logout
+
+
+            </a>
+
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+
+        <header class="topbar">
+
+
+            <div>
+
+
+                <span class="topbar-label">
+
+                    PATIENT DASHBOARD
+
+                </span>
+
+
+                <h1>
+
+
+                    Good day,
+
+                    {{ current_user.name }}
+
+
+                </h1>
+
+
+            </div>
+
+
+            <!-- TOPBAR RIGHT SIDE -->
+
+
+            <div class="topbar-actions">
+
+
+                <!-- AI CHATBOT BUTTON -->
+
+
+                <a href="{{ url_for(
+
+                    'chatbot.chatbot'
+
+                ) }}"
+
+                   class="floating-ai-bot"
+
+                   title="Chat with OncoCare AI">
+
+
+                    <span class="ai-label">
+
+                        ASK AI
+
+                    </span>
+
+
+                    <div class="ai-pulse"></div>
+
+
+                    <div class="ai-robot">
+
+
+                        <div class="robot-antenna"></div>
+
+
+                        <div class="robot-head">
+
+
+                            <span class="robot-eye"></span>
+
+
+                            <span class="robot-eye"></span>
+
+
+                            <div class="robot-mouth"></div>
+
+
+                        </div>
+
+
+                        <div class="robot-body">
+
+
+                            <div class="robot-core">
+
+                                ✦
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </a>
+
+
+                <!-- PROFILE -->
+
+
+                <div class="profile-circle">
+
+
+                    {{ current_user.name[0].upper() }}
+
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- WELCOME SECTION -->
+
+
+        <section class="welcome-section">
+
+
+            <div>
+
+
+                <h2>
+
+                    Your health overview
+
+                </h2>
+
+
+                <p>
+
+                    Monitor your daily health patterns
+
+                    and recovery progress.
+
+                </p>
+
+
+            </div>
+
+
+            <div class="welcome-actions">
+
+
+                <!-- RECORD HEALTH DATA -->
+
+
+                <a href="{{ url_for(
+
+                    'health.add_health_data'
+
+                ) }}"
+
+                   class="primary-button">
+
+
+                    + Record Today
+
+
+                </a>
+
+
+                <!-- ANALYZE HEALTH -->
+
+
+                <a href="{{ url_for(
+
+                    'ai.analyze_health'
+
+                ) }}"
+
+                   class="secondary-button">
+
+
+                    ✦ Analyze My Health
+
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================
+             VITAL CARDS
+        ====================================== -->
+
+
+        <section class="vital-grid">
+
+
+            <!-- HEART RATE -->
+
+
+            <div class="vital-card">
+
+
+                <span class="vital-label">
+
+                    HEART RATE
+
+                </span>
+
+
+                <div class="vital-value">
+
+
+                    {% if latest_record %}
+
+
+                        {{ latest_record.heart_rate }}
+
+                        <small>
+
+                            BPM
+
+                        </small>
+
+
+                    {% else %}
+
+
+                        --
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <p>
+
+                    Latest reading
+
+                </p>
+
+
+            </div>
+
+
+            <!-- BLOOD OXYGEN -->
+
+
+            <div class="vital-card">
+
+
+                <span class="vital-label">
+
+                    BLOOD OXYGEN
+
+                </span>
+
+
+                <div class="vital-value">
+
+
+                    {% if latest_record %}
+
+
+                        {{ latest_record.spo2 }}
+
+                        <small>
+
+                            %
+
+                        </small>
+
+
+                    {% else %}
+
+
+                        --
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <p>
+
+                    Latest reading
+
+                </p>
+
+
+            </div>
+
+
+            <!-- TEMPERATURE -->
+
+
+            <div class="vital-card">
+
+
+                <span class="vital-label">
+
+                    TEMPERATURE
+
+                </span>
+
+
+                <div class="vital-value">
+
+
+                    {% if latest_record %}
+
+
+                        {{ latest_record.temperature }}
+
+                        <small>
+
+                            °F
+
+                        </small>
+
+
+                    {% else %}
+
+
+                        --
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <p>
+
+                    Latest reading
+
+                </p>
+
+
+            </div>
+
+
+            <!-- SLEEP -->
+
+
+            <div class="vital-card">
+
+
+                <span class="vital-label">
+
+                    SLEEP
+
+                </span>
+
+
+                <div class="vital-value">
+
+
+                    {% if latest_record %}
+
+
+                        {{ latest_record.sleep_hours }}
+
+                        <small>
+
+                            HRS
+
+                        </small>
+
+
+                    {% else %}
+
+
+                        --
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <p>
+
+                    Latest reading
+
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================
+             HEALTH CHART
+        ====================================== -->
+
+
+        <section class="chart-card">
+
+
+            <div class="section-header">
+
+
+                <div>
+
+
+                    <span class="topbar-label">
+
+                        HEALTH TRENDS
+
+                    </span>
+
+
+                    <h2>
+
+                        Vital signs over time
+
+                    </h2>
+
+
+                </div>
+
+
+                <select id="chartSelector"
+
+                        class="chart-select">
+
+
+                    <option value="heartRate">
+
+                        Heart Rate
+
+                    </option>
+
+
+                    <option value="spo2">
+
+                        SpO₂
+
+                    </option>
+
+
+                    <option value="temperature">
+
+                        Temperature
+
+                    </option>
+
+
+                    <option value="sleep">
+
+                        Sleep
+
+                    </option>
+
+
+                    <option value="fatigue">
+
+                        Fatigue
+
+                    </option>
+
+
+                    <option value="pain">
+
+                        Pain
+
+                    </option>
+
+
+                </select>
+
+
+            </div>
+
+
+            <div class="chart-wrapper">
+
+
+                <canvas id="healthChart"></canvas>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================
+             RECENT RECORDS
+        ====================================== -->
+
+
+        <section class="records-card">
+
+
+            <div class="section-header">
+
+
+                <div>
+
+
+                    <span class="topbar-label">
+
+                        HEALTH HISTORY
+
+                    </span>
+
+
+                    <h2>
+
+                        Recent records
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+            {% if health_records %}
+
+
+            <div class="table-container">
+
+
+                <table>
+
+
+                    <thead>
+
+
+                        <tr>
+
+
+                            <th>
+
+                                DATE
+
+                            </th>
+
+
+                            <th>
+
+                                HEART RATE
+
+                            </th>
+
+
+                            <th>
+
+                                SPO₂
+
+                            </th>
+
+
+                            <th>
+
+                                TEMP
+
+                            </th>
+
+
+                            <th>
+
+                                SLEEP
+
+                            </th>
+
+
+                            <th>
+
+                                FATIGUE
+
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for record in
+
+                            health_records|reverse %}
+
+
+                        <tr>
+
+
+                            <td>
+
+
+                                {{ record.recorded_at.strftime(
+
+                                    "%d %b %Y"
+
+                                ) }}
+
+
+                            </td>
+
+
+                            <td>
+
+
+                                {{ record.heart_rate }}
+
+                                BPM
+
+
+                            </td>
+
+
+                            <td>
+
+
+                                {{ record.spo2 }}%
+
+
+                            </td>
+
+
+                            <td>
+
+
+                                {{ record.temperature }}°F
+
+
+                            </td>
+
+
+                            <td>
+
+
+                                {{ record.sleep_hours }}
+
+                                hrs
+
+
+                            </td>
+
+
+                            <td>
+
+
+                                {{ record.fatigue_level }}/10
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+            {% else %}
+
+
+            <div class="empty-state">
+
+
+                <h3>
+
+                    No health records yet
+
+                </h3>
+
+
+                <p>
+
+                    Start tracking your health today.
+
+                </p>
+
+
+                <a href="{{ url_for(
+
+                    'health.add_health_data'
+
+                ) }}"
+
+                   class="primary-button">
+
+
+                    Add First Record
+
+
+                </a>
+
+
+            </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- HEALTH DATA FOR CHART -->
+
+
+<script id="health-data"
+
+        type="application/json">
+
+
+{{ {
+
+    "labels": chart_labels,
+
+    "temperature": temperature_data,
+
+    "heartRate": heart_rate_data,
+
+    "spo2": spo2_data,
+
+    "sleep": sleep_data,
+
+    "fatigue": fatigue_data,
+
+    "pain": pain_data
+
+} | tojson }}
+
+
+</script>
+
+
+<script src="{{ url_for(
+
+    'static',
+
+    filename='js/charts.js'
+
+) }}"></script>
+
+
+{% endblock %}

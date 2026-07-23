@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Login | OncoCare AI
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="auth-page">
+
+
+    <div class="auth-card">
+
+
+        <div class="brand-logo">
+
+            <div class="logo-symbol">
+
+                ✦
+
+            </div>
+
+
+            <div>
+
+                <h1>
+
+                    OncoCare AI
+
+                </h1>
+
+
+                <span>
+
+                    INTELLIGENT HEALTH MONITORING
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-heading">
+
+            <p class="eyebrow">
+
+                WELCOME BACK
+
+            </p>
+
+
+            <h2>
+
+                Sign in to your account
+
+            </h2>
+
+
+            <p>
+
+                Continue monitoring your health journey.
+
+            </p>
+
+        </div>
+
+
+        <form
+
+            method="POST"
+
+            class="auth-form"
+
+        >
+
+
+            <div class="form-group">
+
+                <label>
+
+                    Email Address
+
+                </label>
+
+
+                <input
+
+                    type="email"
+
+                    name="email"
+
+                    placeholder="you@example.com"
+
+                    required
+
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+
+                    Password
+
+                </label>
+
+
+                <input
+
+                    type="password"
+
+                    name="password"
+
+                    placeholder="Enter your password"
+
+                    required
+
+                >
+
+            </div>
+
+
+            <button
+
+                type="submit"
+
+                class="primary-button"
+
+            >
+
+                Sign In
+
+            </button>
+
+
+        </form>
+
+
+        <p class="auth-footer">
+
+            Don't have an account?
+
+            <a href="{{ url_for(
+                'auth.register'
+            ) }}">
+
+                Create account
+
+            </a>
+
+        </p>
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}

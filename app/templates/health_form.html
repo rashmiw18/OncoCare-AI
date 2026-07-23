@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Health Data | OncoCare AI
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-page">
+
+
+    <div class="form-card">
+
+
+        <div class="page-header">
+
+
+            <div>
+
+                <span class="eyebrow">
+
+                    DAILY MONITORING
+
+                </span>
+
+
+                <h1>
+
+                    Record Health Data
+
+                </h1>
+
+
+                <p>
+
+                    Add your daily health information.
+
+                </p>
+
+            </div>
+
+
+            <a href="{{ url_for(
+                'dashboard.dashboard'
+            ) }}"
+
+            class="secondary-button">
+
+                ← Dashboard
+
+            </a>
+
+
+        </div>
+
+
+        <form method="POST">
+
+
+            <div class="form-section">
+
+
+                <h2>
+
+                    Vital Signs
+
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Temperature °F
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="temperature"
+
+                            step="0.1"
+
+                            placeholder="98.6"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Heart Rate BPM
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="heart_rate"
+
+                            placeholder="72"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            SpO₂ %
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="spo2"
+
+                            step="0.1"
+
+                            placeholder="98"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Sleep Hours
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="sleep_hours"
+
+                            step="0.5"
+
+                            placeholder="7"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-section">
+
+
+                <h2>
+
+                    Symptoms & Recovery
+
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Pain Level
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="pain_level"
+
+                            min="0"
+
+                            max="10"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Fatigue Level
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="fatigue_level"
+
+                            min="0"
+
+                            max="10"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Nausea Level
+
+                        </label>
+
+
+                        <input
+
+                            type="number"
+
+                            name="nausea_level"
+
+                            min="0"
+
+                            max="10"
+
+                            required
+
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Dizziness
+
+                        </label>
+
+
+                        <select name="dizziness">
+
+
+                            <option value="no">
+
+                                No
+
+                            </option>
+
+
+                            <option value="yes">
+
+                                Yes
+
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-section">
+
+
+                <h2>
+
+                    Additional Notes
+
+                </h2>
+
+
+                <textarea
+
+                    name="notes"
+
+                    rows="5"
+
+                    placeholder="Describe any additional symptoms or observations..."
+
+                ></textarea>
+
+
+            </div>
+
+
+            <button
+
+                type="submit"
+
+                class="primary-button full-width"
+
+            >
+
+                Save Health Record
+
+            </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+{% endblock %}
